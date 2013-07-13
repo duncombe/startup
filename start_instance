@@ -5,15 +5,26 @@
 REMTOE=${1?Remote host to connect to?}
 AWSAUTH=StartupEngineering/chris-duncombe-rae.pem
 
-echo Copying startup script
-scp -i $AWSAUTH  startup.script ubuntu@$REMTOE:
+# echo Copying startup script
+# scp -i $AWSAUTH  startup.script ubuntu@$REMTOE:
 
 # echo Copying github key and ssh config
-scp -i $AWSAUTH  /home/duncombe/.ssh/github_key{,.pub} ubuntu@$REMTOE:.ssh/
-scp -i $AWSAUTH  StartupEngineering/ssh_config  ubuntu@$REMTOE:.ssh/config
+scp -i $AWSAUTH  /home/duncombe/.ssh/github_key{,.pub} ubuntu@$REMTOE:.ssh/ ||
+	{echo Transfer github keys failed ; exit 1 ;}
+scp -i $AWSAUTH  StartupEngineering/ssh_config  ubuntu@$REMTOE:.ssh/config || 
+	{echo Transfer ssh_config file failed ; exit 2 ;}
 
-# lets try with running the installations while we're doing the setup
-ssh -i $AWSAUTH   ubuntu@$REMTOE ./startup.script
+# install git-core so we can continue
+ssh -i $AWSAUTH   ubuntu@$REMTOE sudo apt-get install -y git-core
 
+# clone the setup script out of github
+ssh -i $AWSAUTH   ubuntu@$REMTOE git clone github:duncombe/setup
+
+# run the setup script
+ssh -i $AWSAUTH   ubuntu@$REMTOE setup/setup.sh
+
+# start an interactive shell
 ssh -i $AWSAUTH   ubuntu@$REMTOE
+
+# vim: se nowrap tw=0 :
  
