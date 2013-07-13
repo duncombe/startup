@@ -1,0 +1,19 @@
+#! /bin/bash
+#  authorization information is now set in ~/.ssh/config
+# so the work with the AWSAUTH env-var is superfluous now
+
+REMTOE=${1?Remote host to connect to?}
+AWSAUTH=StartupEngineering/chris-duncombe-rae.pem
+
+echo Copying startup script
+scp -i $AWSAUTH  startup.script ubuntu@$REMTOE:
+
+# echo Copying github key and ssh config
+scp -i $AWSAUTH  /home/duncombe/.ssh/github_key{,.pub} ubuntu@$REMTOE:.ssh/
+scp -i $AWSAUTH  StartupEngineering/ssh_config  ubuntu@$REMTOE:.ssh/config
+
+# lets try with running the installations while we're doing the setup
+ssh -i $AWSAUTH   ubuntu@$REMTOE ./startup.script
+
+ssh -i $AWSAUTH   ubuntu@$REMTOE
+ 
