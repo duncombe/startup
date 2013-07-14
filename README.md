@@ -18,7 +18,7 @@ directory.
 Ubuntu server 12.04.2 LTS, which will be identified by an \<instance_name\> of the
 form *.compute.amazonaws.com.
 	
-4) Run start_instance <instance_name>
+4) Run start_instance \<instance_name\>
 
 The start_instance script will log on to the t1.micro instance and git
 clone duncombe/dotfiles and duncombe/setup. The setup script in set up will

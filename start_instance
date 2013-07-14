@@ -3,16 +3,25 @@
 # so the work with the AWSAUTH env-var is superfluous now
 
 REMTOE=${1?Remote host to connect to?}
-AWSAUTH=StartupEngineering/chris-duncombe-rae.pem
+AWSAUTH=~/.ssh/chris-duncombe-rae.pem
 
 # echo Copying startup script
 # scp -i $AWSAUTH  startup.script ubuntu@$REMTOE:
 
-# echo Copying github key and ssh config
+# echo Copying github keys
 scp -i $AWSAUTH  /home/duncombe/.ssh/github_key{,.pub} ubuntu@$REMTOE:.ssh/ ||
 	{echo Transfer github keys failed ; exit 1 ;}
-scp -i $AWSAUTH  StartupEngineering/ssh_config  ubuntu@$REMTOE:.ssh/config || 
-	{echo Transfer ssh_config file failed ; exit 2 ;}
+
+# Create a useful ssh_config
+( ssh -i $AWSAUTH  ubuntu@$REMTOE cat \> .ssh/config << ENDIN 
+Host github github.com
+        Hostname github.com
+        User git
+        IdentityFile ~/.ssh/github_key
+	StrictHostKeyChecking   no 
+
+# vim:  se nowrap tw=0 :
+) || {echo Creating .ssh/config file failed ; exit 2 ;}
 
 # install git-core so we can continue
 ssh -i $AWSAUTH   ubuntu@$REMTOE sudo apt-get install -y git-core
