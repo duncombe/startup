@@ -10,7 +10,7 @@ AWSAUTH=~/.ssh/chris-duncombe-rae.pem
 
 # echo Copying github keys
 scp -i $AWSAUTH  /home/duncombe/.ssh/github_key{,.pub} ubuntu@$REMTOE:.ssh/ ||
-	{echo Transfer github keys failed ; exit 1 ;}
+	{ echo Transfer github keys failed ; exit 1 ; }
 
 # Create a useful ssh_config
 ( ssh -i $AWSAUTH  ubuntu@$REMTOE cat \> .ssh/config << ENDIN 
@@ -21,7 +21,8 @@ Host github github.com
 	StrictHostKeyChecking   no 
 
 # vim:  se nowrap tw=0 :
-) || {echo Creating .ssh/config file failed ; exit 2 ;}
+ENDIN
+) || { echo Creating .ssh/config file failed ; exit 2 ; }
 
 # install git-core so we can continue
 ssh -i $AWSAUTH   ubuntu@$REMTOE sudo apt-get install -y git-core
