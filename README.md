@@ -15,7 +15,7 @@ directory.
 	github_key.pub, github_key: the keys for accessing github.com.
 
 3) Launch a t1.micro instance from the dashboard at aws.amazon.com running
-ubuntu 12.?? server, which will be identified by an <instance_name> of the
+Ubuntu server 12.04.2 LTS, which will be identified by an \<instance_name\> of the
 form *.compute.amazonaws.com.
 	
 4) Run start_instance <instance_name>
