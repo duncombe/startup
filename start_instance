@@ -17,6 +17,10 @@ if ( ! ssh -i $AWSAUTH   ubuntu@$REMTOE test -f .installation_complete ) ; then
 scp -i $AWSAUTH  /home/duncombe/.ssh/github_key{,.pub} ubuntu@$REMTOE:.ssh/ ||
 	{ echo Transfer github keys failed ; exit 1 ; }
 
+# Make a copy of the local git --global options
+scp -i $AWSAUTH  /home/duncombe/.gitconfig  ubuntu@$REMTOE: ||
+	{ echo Transfer .gitconfig failed ; exit 3 ; }
+
 # Create a useful ssh_config
 ( ssh -i $AWSAUTH  ubuntu@$REMTOE cat \> .ssh/config << ENDIN 
 Host github github.com
