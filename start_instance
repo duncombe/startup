@@ -5,6 +5,11 @@
 REMTOE=${1?Remote host to connect to?}
 AWSAUTH=~/.ssh/chris-duncombe-rae.pem
 
+
+# Test if we have been here before and done an installation
+if ( ! ssh -i $AWSAUTH   ubuntu@$REMTOE test -f .installation_complete ) ; then 
+
+
 # echo Copying startup script
 # scp -i $AWSAUTH  startup.script ubuntu@$REMTOE:
 
@@ -32,6 +37,14 @@ ssh -i $AWSAUTH   ubuntu@$REMTOE git clone github:duncombe/setup
 
 # run the setup script
 ssh -i $AWSAUTH   ubuntu@$REMTOE setup/setup.sh
+
+# Leave a marker that we completed the install
+ssh -i $AWSAUTH   ubuntu@$REMTOE touch .installation_complete
+
+# End of the installation check
+else 
+	echo A previous startup installation was detected.  Logging in.
+fi
 
 # start an interactive shell
 ssh -i $AWSAUTH   ubuntu@$REMTOE
