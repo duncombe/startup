@@ -2,7 +2,16 @@
 #  authorization information is now set in ~/.ssh/config
 # so the work with the AWSAUTH env-var is superfluous now
 
-REMTOE=${1?Remote host to connect to?}
+REMTOE=${1}
+
+if [ "X"$REMTOE == "X" ]; then
+	REMTOE=$(basename `ls -d ~/.ssh/sockets/*compute.amazonaws.com* 2> /dev/null` 2> /dev/null |
+		sed -e 's/:22$//' -e 's/^ubuntu@//')
+	echo Connecting to $REMTOE
+	host $REMTOE
+fi 
+if [ "X"$REMTOE == "X" ]; then echo "Remote host to connect to? Cannot find a master socket."; exit 1; fi
+
 AWSAUTH=~/.ssh/chris-duncombe-rae.pem
 
 
