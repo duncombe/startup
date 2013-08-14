@@ -5,12 +5,24 @@
 REMTOE=${1}
 
 if [ "X"$REMTOE == "X" ]; then
+	# check for an already open socket
 	REMTOE=$(basename `ls -d ~/.ssh/sockets/*compute.amazonaws.com* 2> /dev/null` 2> /dev/null |
 		sed -e 's/:22$//' -e 's/^ubuntu@//')
 	echo Connecting to $REMTOE
 	host $REMTOE
 fi 
-if [ "X"$REMTOE == "X" ]; then echo "Remote host to connect to? Cannot find a master socket."; exit 1; fi
+if [ "X"$REMTOE == "X" ]; then 
+	echo ${EC2_HOME}ec2-describe-instances
+	# there is no socket, open. Maybe there is a running instance
+	if [ -x ${EC2_HOME}bin/ec2-describe-instances ]; then 
+		REMTOE=$(${EC2_HOME}bin/ec2-describe-instances | awk '/^INSTANCE/{print $4}')
+	fi
+fi
+if [ "X"$REMTOE == "X" ]; then
+	# There is no socket and there is no running instance. Fallover. We cannot continue without an open instance.
+	echo "Remote host to connect to? Cannot find a master socket."
+	exit 1
+fi
 
 AWSAUTH=~/.ssh/chris-duncombe-rae.pem
 
