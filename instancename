@@ -1,0 +1,4 @@
+#! /bin/bash
+
+ec2-describe-instances | awk '/^INSTANCE/{print $4}'
+
